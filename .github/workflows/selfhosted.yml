@@ -439,8 +439,9 @@ jobs:
       # Set-up a spearate directory for the device.
     - name: Set-up workspace environment
       run: |
-        mkdir -p "$PROJECTFOLDER/${{ github.event.inputs.DEVICE_NAME }}"
-        cd "$PROJECTFOLDER/${{ github.event.inputs.DEVICE_NAME }}"
+        cd "$PROJECTFOLDER"
+        mkdir -p "${{ github.event.inputs.DEVICE_NAME }}"
+        cd "${{ github.event.inputs.DEVICE_NAME }}"
       continue-on-error: true
       
       # Generate 'git' credential in base of the workflow's author.
