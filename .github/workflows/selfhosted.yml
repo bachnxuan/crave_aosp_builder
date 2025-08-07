@@ -409,6 +409,13 @@ jobs:
     - name: Create Project Folders
       run: |
         echo "DCDEVSPACE status: ${DCDEVSPACE}"
+        # Always make sure the folder exists
+        mkdir -p "$PROJECTFOLDER"
+        # If we're building AxionOS, skip Crave entirely
+        if [[ "${{ github.event.inputs.BASE_PROJECT }}" == "AxionOS 2.0" ]]; then
+          echo "Skipping Crave clone for AxionOS 2.0 (folder is ready at $PROJECTFOLDER)"
+          exit 0
+        fi
         if [[ $DCDEVSPACE != *1* ]]; then
 
           #curl -s https://raw.githubusercontent.com/accupara/crave/master/get_crave.sh | bash -s -- 
@@ -444,7 +451,7 @@ jobs:
       # Set-up a spearate directory for the device.
     - name: Set-up workspace environment
       run: |
-        cd $PROJECTFOLDER
+        cd $
         mkdir ${{ github.event.inputs.DEVICE_NAME }}
         cd ${{ github.event.inputs.DEVICE_NAME }}
       continue-on-error: true
