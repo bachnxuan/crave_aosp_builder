@@ -208,8 +208,9 @@ jobs:
           LUNCH="lunch ${{ github.event.inputs.PRODUCT_NAME }}-${{ github.event.inputs.BUILD_TYPE }}"
         elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "RisingOS 15 Revived" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" == "echo 'Build Starting!'" ]]; then
             LUNCH="riseup ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
-        elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "RisingOS 15 Revived" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" == "repo init -u https://github.com/AxionAOSP/android.git -b lineage-23.0 --git-lfs --depth=1" ]]; then
+        elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "RisingOS 15 Revived" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" != "echo"* ]]; then
             LUNCH="axion ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
+            echo "Axion Egg"
         else
             LUNCH="breakfast ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
         fi
@@ -438,9 +439,8 @@ jobs:
       # Set-up a spearate directory for the device.
     - name: Set-up workspace environment
       run: |
-        cd "$PROJECTFOLDER"
-        mkdir ${{ github.event.inputs.DEVICE_NAME }}
-        cd ${{ github.event.inputs.DEVICE_NAME }}
+        mkdir -p "$PROJECTFOLDER/${{ github.event.inputs.DEVICE_NAME }}"
+        cd "$PROJECTFOLDER/${{ github.event.inputs.DEVICE_NAME }}"
       continue-on-error: true
       
       # Generate 'git' credential in base of the workflow's author.
