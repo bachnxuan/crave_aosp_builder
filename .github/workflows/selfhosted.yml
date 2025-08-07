@@ -32,8 +32,8 @@ on:
       BUILD_DIFFERENT_ROM:
         description: "Command to initialize a different 'repo' project:"
         required: false
-        default: "echo 'Build Starting!'"
-      REMOVALS:
+        default: "repo init -u https://github.com/AxionAOSP/android.git -b lineage-23.0 --git-lfs --depth=1"
+      REMOVALS: 
         description: "Folders to be removed before syncing:"
         required: false
       LOCAL_MANIFEST:
@@ -184,9 +184,9 @@ jobs:
           export REPO_INIT="repo init -u https://github.com/RisingOS-Revived/android.git -b fifteen --git-lfs --depth=1"
         ;;
         "AxionOS 2.0")
-          export PROJECTFOLDER="/crave-devspaces/AxionOS20"
-          export PROJECTID="20"
-          export REPO_INIT="repo init -u https://github.com/AxionAOSP/android.git -b lineage-23.0 --git-lfs --depth=1"
+          export PROJECTFOLDER="/crave-devspaces/Rising15"
+          export PROJECTID="86"
+          export REPO_INIT="${{ github.event.inputs.BUILD_DIFFERENT_ROM }}"
         ;;
         "LineageOS 18.1")
           export PROJECTFOLDER="/crave-devspaces/Lineage18"
@@ -214,7 +214,7 @@ jobs:
           LUNCH="lunch ${{ github.event.inputs.PRODUCT_NAME }}-${{ github.event.inputs.BUILD_TYPE }}"
         elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "RisingOS 15 Revived" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" == "echo 'Build Starting!'" ]]; then
             LUNCH="riseup ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
-        elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "AxionOS 2.0" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" == "echo 'Build Starting!'" ]]; then
+        elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "AxionOS 2.0" ]]; then
             LUNCH="axion ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
         else
             LUNCH="breakfast ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
@@ -409,13 +409,6 @@ jobs:
     - name: Create Project Folders
       run: |
         echo "DCDEVSPACE status: ${DCDEVSPACE}"
-        # Always make sure the folder exists
-        mkdir -p "$PROJECTFOLDER"
-        # If we're building AxionOS, skip Crave entirely
-        if [[ "${{ github.event.inputs.BASE_PROJECT }}" == "AxionOS 2.0" ]]; then
-          echo "Skipping Crave clone for AxionOS 2.0 (folder is ready at $PROJECTFOLDER)"
-          exit 0
-        fi
         if [[ $DCDEVSPACE != *1* ]]; then
 
           #curl -s https://raw.githubusercontent.com/accupara/crave/master/get_crave.sh | bash -s -- 
