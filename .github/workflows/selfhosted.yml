@@ -13,10 +13,9 @@ on:
       BASE_PROJECT:
         description: 'Choose a base project:'
         required: true
-        default: 'AxionOS 2.0'
+        default: 'RisingOS 15 Revived'
         type: choice
         options:
-          - 'AxionOS 2.0'
           - 'LineageOS 20.0'
           - 'LineageOS 21.0'
           - 'LineageOS 22.1'
@@ -183,11 +182,6 @@ jobs:
           export PROJECTID="86"
           export REPO_INIT="repo init -u https://github.com/RisingOS-Revived/android.git -b fifteen --git-lfs --depth=1"
         ;;
-        "AxionOS 2.0")
-          export PROJECTFOLDER="/crave-devspaces/Rising15"
-          export PROJECTID="86"
-          export REPO_INIT="${{ github.event.inputs.BUILD_DIFFERENT_ROM }}"
-        ;;
         "LineageOS 18.1")
           export PROJECTFOLDER="/crave-devspaces/Lineage18"
           export PROJECTID="85"
@@ -214,7 +208,7 @@ jobs:
           LUNCH="lunch ${{ github.event.inputs.PRODUCT_NAME }}-${{ github.event.inputs.BUILD_TYPE }}"
         elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "RisingOS 15 Revived" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" == "echo 'Build Starting!'" ]]; then
             LUNCH="riseup ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
-        elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "AxionOS 2.0" ]]; then
+        elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "RisingOS 15 Revived" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" == "repo init -u https://github.com/AxionAOSP/android.git -b lineage-23.0 --git-lfs --depth=1" ]]; then
             LUNCH="axion ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
         else
             LUNCH="breakfast ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
