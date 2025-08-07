@@ -13,9 +13,10 @@ on:
       BASE_PROJECT:
         description: 'Choose a base project:'
         required: true
-        default: 'LineageOS 21.0'
+        default: 'AxionOS 2.0'
         type: choice
         options:
+          - 'AxionOS 2.0'
           - 'LineageOS 20.0'
           - 'LineageOS 21.0'
           - 'LineageOS 22.1'
@@ -38,23 +39,23 @@ on:
       LOCAL_MANIFEST:
         description: "Personal local manifest [repository or raw]:"
         required: true
-        default: 'https://github.com/sounddrill31/local_manifests_oxygen'
+        default: 'https://github.com/xaga-axionos/local_manifests'
       LOCAL_MANIFEST_BRANCH:
         description: "Personal local manifest's branch:"
         required: false
-        default: 'lineage-21-qpr3'
+        default: '16'
       DEVICE_NAME:
         description: "Device's codename:"
         required: true
-        default: "oxygen"
+        default: "xaga"
       PRODUCT_NAME:
         description: "Product to build:"
         required: true
-        default: "oxygen"
+        default: "xaga"
       BUILD_COMMAND:
         description: 'Command to be used for compiling:'
         required: true
-        default: 'mka bacon'
+        default: 'ax -br -j$(nproc --all)'
       BUILD_TYPE:
         description: 'Type of build:'
         required: true
@@ -182,6 +183,11 @@ jobs:
           export PROJECTID="86"
           export REPO_INIT="repo init -u https://github.com/RisingOS-Revived/android.git -b fifteen --git-lfs --depth=1"
         ;;
+        "AxionOS 2.0")
+          export PROJECTFOLDER="/crave-devspaces/AxionOS20"
+          export PROJECTID="20"
+          export REPO_INIT="repo init -u https://github.com/AxionAOSP/android.git -b lineage-23.0 --git-lfs --depth=1"
+        ;;
         "LineageOS 18.1")
           export PROJECTFOLDER="/crave-devspaces/Lineage18"
           export PROJECTID="85"
@@ -208,6 +214,8 @@ jobs:
           LUNCH="lunch ${{ github.event.inputs.PRODUCT_NAME }}-${{ github.event.inputs.BUILD_TYPE }}"
         elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "RisingOS 15 Revived" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" == "echo 'Build Starting!'" ]]; then
             LUNCH="riseup ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
+        elif [[ "${{ github.event.inputs.BASE_PROJECT }}" == "AxionOS 2.0" ]] && [[ "${{ github.event.inputs.BUILD_DIFFERENT_ROM }}" == "echo 'Build Starting!'" ]]; then
+            LUNCH="axion ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
         else
             LUNCH="breakfast ${{ github.event.inputs.PRODUCT_NAME }} ${{ github.event.inputs.BUILD_TYPE }}"
         fi
@@ -527,6 +535,12 @@ jobs:
         else
           /opt/crave/resync.sh
         fi && \
+
+        # Clone clang
+        mkdir -p prebuilts/clang/kernel/linux-x86/clang-r563880b && \
+        wget -O clang-archive https://github.com/ESK-Project/aosp_clang_mirror/releases/download/clang-r563880b-13818152/clang-r563880b.tar.gz && \
+        tar -xzf clang-archive -C prebuilts/clang/kernel/linux-x86/clang-r563880b && \
+        rm -f clang-archive && \
 
         # Set up build environment
         export BUILD_USERNAME=${{ github.actor }} ; \
